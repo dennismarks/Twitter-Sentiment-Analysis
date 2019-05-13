@@ -8,22 +8,40 @@
 
 import UIKit
 import SwifteriOS
+import CoreML
+import SwiftyJSON
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sentimentLabel: UILabel!
+    var sentimentClassifier = TweetSentimentClassifier()
     var swifter: Swifter?
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        getSwifter()
-        swifter!.searchTweet(using: "@Apple", lang: "en", count: 100, success: { (results, metadata) in
-            print(results)
-        }) { (error) in
-            print(error)
+        setUpSwifter()
+        if let swifter = swifter {
+            swifter.searchTweet(using: "@Apple", lang: "en", count: 100, tweetMode: .extended, success: { (results, metadata) in
+                
+                var tweets = [TweetSentimentClassifierInput]()
+                for i in 0...99 {
+                    if let tweet = results[i]["full_text"].string {
+                        let tweetForClassification = TweetSentimentClassifierInput(text: tweet)
+                        tweets.append(tweetForClassification)
+                    }
+                }
+                
+                do {
+                    let predictions = try self.sentimentClassifier.predictions(inputs: tweets)
+                } catch {
+                    print(error)
+                }
+                
+            }) { (error) in
+                print(error)
+            }
         }
     }
 
@@ -31,7 +49,7 @@ class ViewController: UIViewController {
         
     }
     
-    func getSwifter() {
+    func setUpSwifter() {
         var api = ""
         var api_secret = ""
         if let path = Bundle.main.path(forResource: "API", ofType: "plist") {
