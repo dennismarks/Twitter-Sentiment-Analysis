@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C5EE041514649097BB3E5C076F48DE29"
-               BuildableName = "Pods_Twittermenti.framework"
-               BlueprintName = "Pods-Twittermenti"
+               BlueprintIdentifier = "715DCA30EB8C09974D86A4A9C3CE1B09"
+               BuildableName = "SVProgressHUD.framework"
+               BlueprintName = "SVProgressHUD"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C5EE041514649097BB3E5C076F48DE29"
-            BuildableName = "Pods_Twittermenti.framework"
-            BlueprintName = "Pods-Twittermenti"
+            BlueprintIdentifier = "715DCA30EB8C09974D86A4A9C3CE1B09"
+            BuildableName = "SVProgressHUD.framework"
+            BlueprintName = "SVProgressHUD"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
