@@ -10,22 +10,29 @@ import UIKit
 import SwifteriOS
 import CoreML
 import SwiftyJSON
+import SVProgressHUD
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UISearchBarDelegate {
     
-    @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var sentimentLabel: UILabel!
+    @IBOutlet weak var posLabel: UILabel!
+    @IBOutlet weak var negLabel: UILabel!
+    @IBOutlet weak var neutralLabel: UILabel!
+    @IBOutlet weak var numOfTweetsLabel: UILabel!
+    
     var sentimentClassifier = TweetSentimentClassifier()
     var swifter: Swifter?
     var pos = 0
     var neg = 0
     var neutr = 0
     let tweetCount = 100
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpSwifter()
+        textField.delegate = self
+        hideKeyboardWhenTappedAround()
     }
 
     @IBAction func predictPressed(_ sender: Any) {
@@ -33,6 +40,8 @@ class ViewController: UIViewController {
         neg = 0
         neutr = 0
         fetchTweets()
+        dismissKeyboard()
+        SVProgressHUD.show()
     }
     
     func fetchTweets() {
@@ -67,7 +76,7 @@ class ViewController: UIViewController {
                     sentimentScore -= 1
                     neg += 1
                 } else {
-                    sentimentScore += 0.1
+//                    sentimentScore += 0.1
                     neutr += 1
                 }
             }
@@ -91,7 +100,18 @@ class ViewController: UIViewController {
         } else {
             self.sentimentLabel.text = "😡"
         }
-        print(pos, neg, neutr)
+        
+        posLabel.text = "Positive: \(pos)"
+        negLabel.text = "Negative: \(neg)"
+        neutralLabel.text = "Neutral: \(neutr)"
+        
+        sentimentLabel.isHidden = false
+        posLabel.isHidden = false
+        negLabel.isHidden = false
+        neutralLabel.isHidden = false
+        numOfTweetsLabel.isHidden = false
+        
+        SVProgressHUD.dismiss()
     }
     
     func setUpSwifter() {
@@ -104,6 +124,29 @@ class ViewController: UIViewController {
             }
         }
         swifter = Swifter(consumerKey: api, consumerSecret: api_secret)
+    }
+    
+}
+
+extension ViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        predictPressed(self)
+        return true
+    }
+    
+}
+
+extension UIViewController {
+    
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
 }
